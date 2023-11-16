@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using GRpc.API;
 
 namespace GRpc.Server
 {
@@ -11,7 +12,7 @@ namespace GRpc.Server
         [STAThread]
         static void Main()
         {
-            LocalServer server = new LocalServer();
+            GreetServer server = new GreetServer();
             server.Start();
 
             Application.EnableVisualStyles();

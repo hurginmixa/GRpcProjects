@@ -1,18 +1,17 @@
 ﻿using System.Threading.Tasks;
-using GRpc.API;
 using Grpc.Core;
 using GrpcGreeter;
 
-namespace GRpc.Server
+namespace GRpc.API
 {
-    public class LocalServer
+    public class GreetServer
     {
         private const string DefaultHost = "localhost";
         private const int DefaultPort = 50051;
 
-        private readonly Grpc.Core.Server _grpcServer;
+        private readonly Server _grpcServer;
 
-        public LocalServer(string serverHost = DefaultHost, int serverPort = DefaultPort)
+        public GreetServer(string serverHost = DefaultHost, int serverPort = DefaultPort)
         {
             _grpcServer = new Grpc.Core.Server()
             {
