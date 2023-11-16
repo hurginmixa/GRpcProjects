@@ -18,5 +18,5 @@ message HelloRequest {
 // The response message containing the greetings.
 message HelloReply {
   string message = 1;
-  int32 count = 2;
+  int32 Count = 2;
 }
