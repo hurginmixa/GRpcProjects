@@ -15,8 +15,8 @@ namespace GRpc.API
         {
             _grpcServer = new Grpc.Core.Server()
             {
-                Services = { Greeter.BindService(new GreetServiceImpl()) },
-                Ports = { new ServerPort(serverHost, serverPort,ServerCredentials.Insecure) }
+                Services = {Greeter.BindService(new GreetServiceImpl())},
+                Ports = {new ServerPort(serverHost, serverPort, ServerCredentials.Insecure)}
             };
         }
 
