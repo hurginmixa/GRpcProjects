@@ -1,21 +1,17 @@
 ﻿using System.Threading.Tasks;
 using Grpc.Core;
-using GrpcGreeter;
 
 namespace GRpc.API
 {
-    public class GreetServer
+    public class GrpcServer
     {
-        private const string DefaultHost = "localhost";
-        private const int DefaultPort = 50051;
-
         private readonly Server _grpcServer;
 
-        public GreetServer(string serverHost = DefaultHost, int serverPort = DefaultPort)
+        public GrpcServer(ServerServiceDefinition serviceDefinition, string serverHost, int serverPort)
         {
             _grpcServer = new Grpc.Core.Server()
             {
-                Services = {Greeter.BindService(new GreetServiceImpl())},
+                Services = {serviceDefinition},
                 Ports = {new ServerPort(serverHost, serverPort, ServerCredentials.Insecure)}
             };
         }

@@ -1,11 +1,11 @@
-﻿using System;
+﻿using GRpc.API;
+using RtpServiceClasses;
+using System;
 using System.Windows.Forms;
-using GRpc.API;
-using GrpcGreeter;
 
-namespace GRpc.Server
+namespace ServantApplication
 {
-    static class Program
+    internal static class ServantApplicationProgram
     {
         /// <summary>
         /// The main entry point for the application.
@@ -13,14 +13,12 @@ namespace GRpc.Server
         [STAThread]
         static void Main()
         {
-            GrpcServer server = new GrpcServer(Greeter.BindService(new GreetServiceImpl()), Helpers.DefaultHost, Helpers.DefaultPort);
+            GrpcServer server = new GrpcServer(RtpService.BindService(new RtpServiceImpl()), Helpers.DefaultHost, Helpers.DefaultPort);
             server.Start();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
-
-            server.Stop();
         }
     }
 }

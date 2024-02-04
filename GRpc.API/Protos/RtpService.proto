@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+option csharp_namespace = "RtpServiceClasses";
+
+package RtpService;
+
+// RtpService
+
+enum OperationStatus
+{
+	Ok = 0;
+	Fail = 1;
+}
+
+// --------------------------------------------------------
+
+message ShowRtpRequest {
+  string rptParams = 1;
+}
+
+message ShowRtpReply {
+  OperationStatus Status = 1;
+  string rptParams = 2;
+}
+
+message HandChackingRequest
+{
+	string HostName = 1;
+	int32 PortNumber = 2;
+}
+
+message HandChackingReplay
+{
+	OperationStatus Status = 1;
+}
+
+service RtpService
+{
+  rpc HandChacking(HandChackingRequest) returns (HandChackingReplay);
+
+  rpc ShowRtp (ShowRtpRequest) returns (ShowRtpReply);
+}
+
+// --------------------------------------------------------
+// RtpServiceReceiver
+
+message ShowRtpReceiverRequest {
+  string DllPath = 1;
+  string ClassName = 2;
+  string rptParams = 4;
+}
+
+message ShowRtpReceiverReplay {
+  OperationStatus Status = 1;
+  string rptParams = 2;
+}
+
+service RtpServiceReceiver
+{
+  rpc ShowRtp (ShowRtpReceiverRequest) returns (ShowRtpReceiverReplay);
+}
+
