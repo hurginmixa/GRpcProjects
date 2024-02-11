@@ -40,11 +40,11 @@ namespace MainApplication
                 RtpService.RtpServiceClient client = Helpers.MakeRtpServiceClient(Helpers.DefaultHost, Helpers.DefaultPort);
 
 
-                HandChackingRequest handCheckingRequest = new HandChackingRequest();
+                GrpcHandChackingRequest handCheckingRequest = new GrpcHandChackingRequest();
                 handCheckingRequest.HostName = Helpers.DefaultHost;
                 handCheckingRequest.PortNumber = Helpers.ReceiverPort;
 
-                HandChackingReplay handChackingReplay = client.HandChacking(handCheckingRequest);
+                GrpcHandChackingReplay handChackingReplay = client.HandChacking(handCheckingRequest);
 
 
                 Application.EnableVisualStyles();

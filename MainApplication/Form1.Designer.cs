@@ -30,6 +30,7 @@
         {
             this.btShowRtp = new System.Windows.Forms.Button();
             this.lbRtpList = new System.Windows.Forms.ListBox();
+            this.tbText = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btShowRtp
@@ -51,17 +52,27 @@
             this.lbRtpList.Size = new System.Drawing.Size(152, 56);
             this.lbRtpList.TabIndex = 1;
             // 
+            // tbText
+            // 
+            this.tbText.Location = new System.Drawing.Point(330, 249);
+            this.tbText.Name = "tbText";
+            this.tbText.Size = new System.Drawing.Size(127, 20);
+            this.tbText.TabIndex = 2;
+            this.tbText.Text = "tbText";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.tbText);
             this.Controls.Add(this.lbRtpList);
             this.Controls.Add(this.btShowRtp);
             this.Name = "Form1";
             this.Text = "MainApplicationForm";
             this.Load += new System.EventHandler(this.OnLoad);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -69,6 +80,7 @@
 
         private System.Windows.Forms.Button btShowRtp;
         private System.Windows.Forms.ListBox lbRtpList;
+        private System.Windows.Forms.TextBox tbText;
     }
 }
 

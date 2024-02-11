@@ -7,7 +7,7 @@ namespace ServantRtpList.SecondRtpClasses
     [Serializable]
     public class SecondRtp : MarshalByRefObject, IRtpWindowOpener
     {
-        public bool Open(IntPtr ownerHwnd)
+        public bool Open(IntPtr ownerHwnd, IRtpOption inOption)
         {
             SecondRtpMainForm form = new SecondRtpMainForm();
             IWin32Window owner = NativeWindow.FromHandle(ownerHwnd);

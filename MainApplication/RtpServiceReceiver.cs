@@ -20,29 +20,27 @@ namespace MainApplication
             MainForm = null;
         }
 
-        public override Task<ShowRtpReceiverReplay> ShowRtp(ShowRtpReceiverRequest request, ServerCallContext context)
+        public override Task<GrpcShowRtpReceiverReplay> ShowRtp(GrpcShowRtpReceiverRequest request, ServerCallContext context)
         {
             var id = Guid.NewGuid();
             var appDomain = AppDomain.CreateDomain(id.ToString(), (Evidence) null, Path.GetDirectoryName(request.DllPath), Path.GetDirectoryName(request.DllPath), false);
 
             try
             {
-
-                string s = appDomain.BaseDirectory;
-
+                var rtpOption = RtpOption.Make(request.RptParams);
 
                 void MM()
                 {
                     IRtpWindowOpener inst = (IRtpWindowOpener)appDomain.CreateInstanceFromAndUnwrap(request.DllPath, request.ClassName);
 
-                    inst.Open(MainForm.Handle);
+                    inst.Open(MainForm.Handle, rtpOption);
                 }
 
                 MainForm.Invoke((Action) MM);
 
-                ShowRtpReceiverReplay replay = new ShowRtpReceiverReplay();
-                replay.Status = OperationStatus.Ok;
-                replay.RptParams = request.RptParams;
+                GrpcShowRtpReceiverReplay replay = new GrpcShowRtpReceiverReplay();
+                replay.Status = GrpcOperationStatus.Ok;
+                replay.RptParams = RtpOptionMapper.ToGrpcMapping(rtpOption);
 
                 return Task.FromResult(replay);
             }

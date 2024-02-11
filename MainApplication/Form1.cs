@@ -1,13 +1,7 @@
 ﻿using RtpServiceClasses;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using GRpc.API;
 
 namespace MainApplication
 {
@@ -24,10 +18,17 @@ namespace MainApplication
 
         private async void btShowRtp_Click(object sender, EventArgs e)
         {
-            ShowRtpRequest request = new ShowRtpRequest();
-            request.RptParams = (string) lbRtpList.SelectedItem;
+            IRtpOption rtpOption = new RtpOption();
+            rtpOption.SetItem("RtpName", (string) lbRtpList.SelectedItem);
+            rtpOption.SetItem("Data", tbText.Text);
+
+            GrpcShowRtpRequest request = new GrpcShowRtpRequest();
+            request.RptParams = RtpOptionMapper.ToGrpcMapping(rtpOption);
             
-            ShowRtpReply showRtpReply = await _client.ShowRtpAsync(request);
+            GrpcShowRtpReply showRtpReply = await _client.ShowRtpAsync(request);
+
+            IRtpOption option = RtpOption.Make(showRtpReply.RptParams);
+            tbText.Text = option.Item("Data");
         }
 
         private void OnLoad(object sender, EventArgs e)
@@ -36,6 +37,8 @@ namespace MainApplication
             lbRtpList.Items.Add("Second Rtp");
 
             lbRtpList.SelectedIndex = 0;
+
+            tbText.Text = string.Empty;
         }
     }
 }

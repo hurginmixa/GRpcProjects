@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using GRpc.API;
 using Grpc.Core;
 using RtpServiceClasses;
+using ServantRtpList;
 using ServantRtpList.FirstRtpClasses;
 using ServantRtpList.SecondRtpClasses;
 
@@ -12,44 +13,48 @@ namespace ServantApplication
     {
         private RtpServiceReceiver.RtpServiceReceiverClient _client;
 
-        public override Task<HandChackingReplay> HandChacking(HandChackingRequest request, ServerCallContext context)
+        public override Task<GrpcHandChackingReplay> HandChacking(GrpcHandChackingRequest request, ServerCallContext context)
         {
             _client = Helpers.MakeRtpServiceReceiverClient(request.HostName, request.PortNumber);
 
-            HandChackingReplay replay = new HandChackingReplay();
-            replay.Status = OperationStatus.Ok;
+            GrpcHandChackingReplay replay = new GrpcHandChackingReplay();
+            replay.Status = GrpcOperationStatus.Ok;
 
             return Task.FromResult(replay);
         }
 
-        public override Task<ShowRtpReply> ShowRtp(ShowRtpRequest request, ServerCallContext context)
+        public override Task<GrpcShowRtpReply> ShowRtp(GrpcShowRtpRequest request, ServerCallContext context)
         {
-            switch (request.RptParams)
+            IRtpOption rtpOption = RtpOption.Make(request.RptParams);
+
+            string rtpName = rtpOption.Item(key: "RtpName");
+
+            switch (rtpName)
             {
                 case "First Rtp":
                 {
-                    return ShowRtp(request, typeof(FirstRtp));
+                    return ShowRtp(request: request, type: typeof(FirstRtp));
                 }
 
                 case "Second Rtp":
                 {
-                    return ShowRtp(request, typeof(SecondRtp));
+                    return ShowRtp(request: request, type: typeof(SecondRtp));
                 }
             }
 
-            return Task.FromResult(new ShowRtpReply());
+            return Task.FromResult(result: new GrpcShowRtpReply());
         }
 
-        private Task<ShowRtpReply> ShowRtp(ShowRtpRequest request, Type type)
+        private Task<GrpcShowRtpReply> ShowRtp(GrpcShowRtpRequest request, Type type)
         {
-            ShowRtpReceiverRequest reciverRequest = new ShowRtpReceiverRequest();
+            GrpcShowRtpReceiverRequest reciverRequest = new GrpcShowRtpReceiverRequest();
             reciverRequest.DllPath = type.Assembly.Location;
             reciverRequest.ClassName = type.FullName;
             reciverRequest.RptParams = request.RptParams;
 
-            ShowRtpReceiverReplay receiverReplay = _client.ShowRtp(reciverRequest);
+            GrpcShowRtpReceiverReplay receiverReplay = _client.ShowRtp(reciverRequest);
 
-            ShowRtpReply rtpReply = new ShowRtpReply();
+            GrpcShowRtpReply rtpReply = new GrpcShowRtpReply();
             rtpReply.Status = receiverReplay.Status;
             rtpReply.RptParams = receiverReplay.RptParams;
 

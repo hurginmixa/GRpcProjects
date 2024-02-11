@@ -6,7 +6,7 @@ package RtpService;
 
 // RtpService
 
-enum OperationStatus
+enum GrpcOperationStatus
 {
 	Ok = 0;
 	Fail = 1;
@@ -14,49 +14,59 @@ enum OperationStatus
 
 // --------------------------------------------------------
 
-message ShowRtpRequest {
-  string rptParams = 1;
+message GrpcShowRtpRequest {
+  GrpcRtp rptParams = 1;
 }
 
-message ShowRtpReply {
-  OperationStatus Status = 1;
-  string rptParams = 2;
+message GrpcShowRtpReply {
+  GrpcOperationStatus Status = 1;
+  GrpcRtp rptParams = 2;
 }
 
-message HandChackingRequest
+message GrpcHandChackingRequest
 {
 	string HostName = 1;
 	int32 PortNumber = 2;
 }
 
-message HandChackingReplay
+message GrpcHandChackingReplay
 {
-	OperationStatus Status = 1;
+	GrpcOperationStatus Status = 1;
 }
 
 service RtpService
 {
-  rpc HandChacking(HandChackingRequest) returns (HandChackingReplay);
+  rpc HandChacking(GrpcHandChackingRequest) returns (GrpcHandChackingReplay);
 
-  rpc ShowRtp (ShowRtpRequest) returns (ShowRtpReply);
+  rpc ShowRtp (GrpcShowRtpRequest) returns (GrpcShowRtpReply);
 }
 
 // --------------------------------------------------------
 // RtpServiceReceiver
 
-message ShowRtpReceiverRequest {
+message GrpcShowRtpReceiverRequest {
   string DllPath = 1;
   string ClassName = 2;
-  string rptParams = 4;
+  GrpcRtp rptParams = 4;
 }
 
-message ShowRtpReceiverReplay {
-  OperationStatus Status = 1;
-  string rptParams = 2;
+message GrpcShowRtpReceiverReplay {
+  GrpcOperationStatus Status = 1;
+  GrpcRtp rptParams = 2;
 }
 
 service RtpServiceReceiver
 {
-  rpc ShowRtp (ShowRtpReceiverRequest) returns (ShowRtpReceiverReplay);
+  rpc ShowRtp (GrpcShowRtpReceiverRequest) returns (GrpcShowRtpReceiverReplay);
 }
 
+message GrpcRtpParamerter
+{
+	string Name = 1;
+	string Value = 2;
+}
+
+message GrpcRtp
+{
+	repeated GrpcRtpParamerter Parameters = 1;
+}

@@ -72,6 +72,7 @@
     <Compile Include="GreetServiceImpl.cs" />
     <Compile Include="GrpcServer.cs" />
     <Compile Include="Helpers.cs" />
+    <Compile Include="IRtpOption.cs" />
     <Compile Include="IRtpWindowOpener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
