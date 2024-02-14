@@ -28,21 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btShowRtp = new System.Windows.Forms.Button();
+            this.btShowRtp1 = new System.Windows.Forms.Button();
             this.lbRtpList = new System.Windows.Forms.ListBox();
             this.tbText = new System.Windows.Forms.TextBox();
+            this.btShowRtp2 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // btShowRtp
+            // btShowRtp1
             // 
-            this.btShowRtp.Location = new System.Drawing.Point(329, 376);
-            this.btShowRtp.Name = "btShowRtp";
-            this.btShowRtp.Size = new System.Drawing.Size(146, 35);
-            this.btShowRtp.TabIndex = 0;
-            this.btShowRtp.Text = "Show Rtp";
-            this.btShowRtp.UseMnemonic = false;
-            this.btShowRtp.UseVisualStyleBackColor = true;
-            this.btShowRtp.Click += new System.EventHandler(this.btShowRtp_Click);
+            this.btShowRtp1.Location = new System.Drawing.Point(219, 318);
+            this.btShowRtp1.Name = "btShowRtp1";
+            this.btShowRtp1.Size = new System.Drawing.Size(146, 35);
+            this.btShowRtp1.TabIndex = 0;
+            this.btShowRtp1.Text = "Show Rtp 1";
+            this.btShowRtp1.UseMnemonic = false;
+            this.btShowRtp1.UseVisualStyleBackColor = true;
+            this.btShowRtp1.Click += new System.EventHandler(this.btShowRtp1_Click);
             // 
             // lbRtpList
             // 
@@ -60,14 +61,26 @@
             this.tbText.TabIndex = 2;
             this.tbText.Text = "tbText";
             // 
+            // btShowRtp2
+            // 
+            this.btShowRtp2.Location = new System.Drawing.Point(385, 318);
+            this.btShowRtp2.Name = "btShowRtp2";
+            this.btShowRtp2.Size = new System.Drawing.Size(146, 35);
+            this.btShowRtp2.TabIndex = 3;
+            this.btShowRtp2.Text = "Show Rtp 2";
+            this.btShowRtp2.UseMnemonic = false;
+            this.btShowRtp2.UseVisualStyleBackColor = true;
+            this.btShowRtp2.Click += new System.EventHandler(this.btShowRtp2_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btShowRtp2);
             this.Controls.Add(this.tbText);
             this.Controls.Add(this.lbRtpList);
-            this.Controls.Add(this.btShowRtp);
+            this.Controls.Add(this.btShowRtp1);
             this.Name = "Form1";
             this.Text = "MainApplicationForm";
             this.Load += new System.EventHandler(this.OnLoad);
@@ -78,9 +91,10 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btShowRtp;
+        private System.Windows.Forms.Button btShowRtp1;
         private System.Windows.Forms.ListBox lbRtpList;
         private System.Windows.Forms.TextBox tbText;
+        private System.Windows.Forms.Button btShowRtp2;
     }
 }
 

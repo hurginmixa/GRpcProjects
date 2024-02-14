@@ -22,27 +22,32 @@ namespace MainApplication
 
         public override Task<GrpcShowRtpReceiverReplay> ShowRtp(GrpcShowRtpReceiverRequest request, ServerCallContext context)
         {
+            IRtpOption rtpOption = RtpOption.Make(request.RptParams);
+
+            ShowRtpInOtherDomain(request.DllPath, request.ClassName, rtpOption, MainForm);
+            
+            GrpcShowRtpReceiverReplay replay = new GrpcShowRtpReceiverReplay();
+            replay.Status = GrpcOperationStatus.Ok;
+            replay.RptParams = RtpOptionMapper.ToGrpcMapping(rtpOption);
+
+            return Task.FromResult(replay);
+        }
+
+        public static void ShowRtpInOtherDomain(string dllPath, string className, IRtpOption rtpOption, Control mainForm)
+        {
             var id = Guid.NewGuid();
-            var appDomain = AppDomain.CreateDomain(id.ToString(), (Evidence) null, Path.GetDirectoryName(request.DllPath), Path.GetDirectoryName(request.DllPath), false);
+            var appDomain = AppDomain.CreateDomain(id.ToString(), (Evidence) null, Path.GetDirectoryName(dllPath), Path.GetDirectoryName(dllPath), false);
 
             try
             {
-                var rtpOption = RtpOption.Make(request.RptParams);
-
                 void MM()
                 {
-                    IRtpWindowOpener inst = (IRtpWindowOpener)appDomain.CreateInstanceFromAndUnwrap(request.DllPath, request.ClassName);
+                    IRtpWindowOpener inst = (IRtpWindowOpener)appDomain.CreateInstanceFromAndUnwrap(dllPath, className);
 
-                    inst.Open(MainForm.Handle, rtpOption);
+                    inst.Open(mainForm.Handle, rtpOption);
                 }
 
-                MainForm.Invoke((Action) MM);
-
-                GrpcShowRtpReceiverReplay replay = new GrpcShowRtpReceiverReplay();
-                replay.Status = GrpcOperationStatus.Ok;
-                replay.RptParams = RtpOptionMapper.ToGrpcMapping(rtpOption);
-
-                return Task.FromResult(replay);
+                mainForm.Invoke((Action) MM);
             }
             finally
             {

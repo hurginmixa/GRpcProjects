@@ -11,11 +11,11 @@ namespace ServantApplication
 {
     internal class RtpServiceImpl : RtpService.RtpServiceBase
     {
-        private RtpServiceReceiver.RtpServiceReceiverClient _client;
+        private RtpServiceReceiver.RtpServiceReceiverClient _receiverClient;
 
         public override Task<GrpcHandChackingReplay> HandChacking(GrpcHandChackingRequest request, ServerCallContext context)
         {
-            _client = Helpers.MakeRtpServiceReceiverClient(request.HostName, request.PortNumber);
+            _receiverClient = Helpers.MakeRtpServiceReceiverClient(request.HostName, request.PortNumber);
 
             GrpcHandChackingReplay replay = new GrpcHandChackingReplay();
             replay.Status = GrpcOperationStatus.Ok;
@@ -45,6 +45,33 @@ namespace ServantApplication
             return Task.FromResult(result: new GrpcShowRtpReply());
         }
 
+        public override Task<GrpcRtpInfoReplay> GetRtpInfo(GrpcRtpInfoRequest request, ServerCallContext context)
+        {
+            switch (request.RtpInfoRequestParameter)
+            {
+                case "First Rtp":
+                {
+                    return MakeRtpInfoReplay(request: request, type: typeof(FirstRtp));
+                }
+
+                case "Second Rtp":
+                {
+                    return MakeRtpInfoReplay(request: request, type: typeof(SecondRtp));
+                }
+            }
+
+            return base.GetRtpInfo(request, context);
+        }
+
+        private Task<GrpcRtpInfoReplay> MakeRtpInfoReplay(GrpcRtpInfoRequest request, Type type)
+        {
+            GrpcRtpInfoReplay replay = new GrpcRtpInfoReplay();
+            replay.DllPath = type.Assembly.Location;
+            replay.ClassName = type.FullName;
+
+            return Task.FromResult(replay);
+        }
+
         private Task<GrpcShowRtpReply> ShowRtp(GrpcShowRtpRequest request, Type type)
         {
             GrpcShowRtpReceiverRequest reciverRequest = new GrpcShowRtpReceiverRequest();
@@ -52,7 +79,7 @@ namespace ServantApplication
             reciverRequest.ClassName = type.FullName;
             reciverRequest.RptParams = request.RptParams;
 
-            GrpcShowRtpReceiverReplay receiverReplay = _client.ShowRtp(reciverRequest);
+            GrpcShowRtpReceiverReplay receiverReplay = _receiverClient.ShowRtp(reciverRequest);
 
             GrpcShowRtpReply rtpReply = new GrpcShowRtpReply();
             rtpReply.Status = receiverReplay.Status;

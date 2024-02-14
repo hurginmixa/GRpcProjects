@@ -16,7 +16,7 @@ namespace MainApplication
             InitializeComponent();
         }
 
-        private async void btShowRtp_Click(object sender, EventArgs e)
+        private async void btShowRtp1_Click(object sender, EventArgs e)
         {
             IRtpOption rtpOption = new RtpOption();
             rtpOption.SetItem("RtpName", (string) lbRtpList.SelectedItem);
@@ -39,6 +39,21 @@ namespace MainApplication
             lbRtpList.SelectedIndex = 0;
 
             tbText.Text = string.Empty;
+        }
+
+        private void btShowRtp2_Click(object sender, EventArgs e)
+        {
+            GrpcRtpInfoRequest request = new GrpcRtpInfoRequest();
+            request.RtpInfoRequestParameter = (string) lbRtpList.SelectedItem;
+            
+            GrpcRtpInfoReplay replay = _client.GetRtpInfo(request);
+
+            IRtpOption rtpOption = new RtpOption();
+            rtpOption.SetItem("RtpName", (string) lbRtpList.SelectedItem);
+            rtpOption.SetItem("Data", tbText.Text);
+
+            RtpServiceReceiver.ShowRtpInOtherDomain(replay.DllPath, replay.ClassName, rtpOption, this);
+            tbText.Text = rtpOption.Item("Data");
         }
     }
 }

@@ -34,7 +34,7 @@
             // 
             // btOk
             // 
-            this.btOk.Location = new System.Drawing.Point(95, 150);
+            this.btOk.Location = new System.Drawing.Point(148, 29);
             this.btOk.Name = "btOk";
             this.btOk.Size = new System.Drawing.Size(75, 23);
             this.btOk.TabIndex = 0;
@@ -44,7 +44,7 @@
             // 
             // tbText
             // 
-            this.tbText.Location = new System.Drawing.Point(80, 40);
+            this.tbText.Location = new System.Drawing.Point(24, 31);
             this.tbText.Name = "tbText";
             this.tbText.Size = new System.Drawing.Size(100, 20);
             this.tbText.TabIndex = 1;
@@ -55,7 +55,7 @@
             this.AcceptButton = this.btOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(279, 185);
+            this.ClientSize = new System.Drawing.Size(279, 100);
             this.Controls.Add(this.tbText);
             this.Controls.Add(this.btOk);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

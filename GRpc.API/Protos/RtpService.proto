@@ -34,11 +34,24 @@ message GrpcHandChackingReplay
 	GrpcOperationStatus Status = 1;
 }
 
+message GrpcRtpInfoRequest
+{
+	string RtpInfoRequestParameter = 1;
+}
+
+message GrpcRtpInfoReplay
+{
+  string DllPath = 1;
+  string ClassName = 2;
+}
+
 service RtpService
 {
   rpc HandChacking(GrpcHandChackingRequest) returns (GrpcHandChackingReplay);
 
-  rpc ShowRtp (GrpcShowRtpRequest) returns (GrpcShowRtpReply);
+  rpc ShowRtp(GrpcShowRtpRequest) returns (GrpcShowRtpReply);
+
+  rpc GetRtpInfo(GrpcRtpInfoRequest) returns (GrpcRtpInfoReplay);
 }
 
 // --------------------------------------------------------
