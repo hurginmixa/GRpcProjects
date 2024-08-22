@@ -1,0 +1,56 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "CMM_Parallel_Runner.GRpc.Classes";
+
+package CMM_Parallel_Runner;
+
+message GrpcNone
+{
+}
+
+message GrpcCreateFileInfo
+{
+	string ConverterName = 1;
+	int32 ConverterId = 2;
+	string FileName = 3;
+}
+
+enum eGrpcExportResult
+{
+	Ok = 0;
+	Fail = 1;
+}
+
+message GrpcExportResult
+{
+	eGrpcExportResult Result = 1;
+	repeated GrpcCreateFileInfo Parameters = 2;
+
+	int32 index = 3;
+}
+
+message GrpcCmmExportRequest
+{
+	string Job = 1;
+	string Setup = 2;
+	string Lot = 3;
+	string WaferId = 4;
+	string ResultPath = 5;
+
+	int32 index = 6;
+}
+
+message GrpcCmmExportResponse
+{
+	eGrpcExportResult Result = 1;
+	string Message = 2;
+
+	int32 index = 3;
+}
+
+service CMM_Parallel_Runner_Grpc_Service
+{
+	rpc HandShaking(GrpcNone) returns (stream GrpcExportResult);
+
+	rpc DoCmmExport(GrpcCmmExportRequest) returns (GrpcCmmExportResponse);
+}

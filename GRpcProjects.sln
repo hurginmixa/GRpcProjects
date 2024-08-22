@@ -18,6 +18,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServantApplication", "Serva
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServantRtpList", "ServantRtpList\ServantRtpList.csproj", "{2FBE9423-CBA2-4F68-86ED-B9F52B0BBBA4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMM_Parallel_Runner.API", "CMM_Parallel_Runner.API\CMM_Parallel_Runner.API.csproj", "{68768A7B-1AAB-4734-A520-36396DD48ACF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CMM_Parallel_Runner", "CMM_Parallel_Runner", "{EC626E64-81B3-4335-B953-D33A9BE69626}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMM_Parallel_Runner.Server", "CMM_Parallel_Runner.Server\CMM_Parallel_Runner.Server.csproj", "{DB81FB34-5567-499A-B632-16E7DE102C41}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,9 +54,21 @@ Global
 		{2FBE9423-CBA2-4F68-86ED-B9F52B0BBBA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FBE9423-CBA2-4F68-86ED-B9F52B0BBBA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2FBE9423-CBA2-4F68-86ED-B9F52B0BBBA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68768A7B-1AAB-4734-A520-36396DD48ACF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68768A7B-1AAB-4734-A520-36396DD48ACF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68768A7B-1AAB-4734-A520-36396DD48ACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68768A7B-1AAB-4734-A520-36396DD48ACF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB81FB34-5567-499A-B632-16E7DE102C41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB81FB34-5567-499A-B632-16E7DE102C41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB81FB34-5567-499A-B632-16E7DE102C41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB81FB34-5567-499A-B632-16E7DE102C41}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{68768A7B-1AAB-4734-A520-36396DD48ACF} = {EC626E64-81B3-4335-B953-D33A9BE69626}
+		{DB81FB34-5567-499A-B632-16E7DE102C41} = {EC626E64-81B3-4335-B953-D33A9BE69626}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D871D07F-36EC-4044-B55A-EC7159083FA1}
