@@ -29,6 +29,11 @@ message GrpcExportResult
 	int32 index = 3;
 }
 
+message GrpcHandShakingRequest
+{
+	string RequestorName = 1;
+}
+
 message GrpcCmmExportRequest
 {
 	string Job = 1;
@@ -40,7 +45,7 @@ message GrpcCmmExportRequest
 	int32 index = 6;
 }
 
-message GrpcCmmExportResponse
+message GrpcCmmResult
 {
 	eGrpcExportResult Result = 1;
 	string Message = 2;
@@ -50,7 +55,9 @@ message GrpcCmmExportResponse
 
 service CMM_Parallel_Runner_Grpc_Service
 {
-	rpc HandShaking(GrpcNone) returns (stream GrpcExportResult);
+	rpc GrpcHandShaking(GrpcHandShakingRequest) returns (stream GrpcExportResult);
 
-	rpc DoCmmExport(GrpcCmmExportRequest) returns (GrpcCmmExportResponse);
+	rpc GrpcDoCmmExport(GrpcCmmExportRequest) returns (GrpcCmmResult);
+
+	rpc GRpcStop(GrpcNone) returns (GrpcCmmResult);
 }

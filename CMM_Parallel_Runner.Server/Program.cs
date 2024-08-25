@@ -15,9 +15,8 @@ namespace CMM_Parallel_Runner.Server
         static void Main()
         {
             CmmProcessor cmmProcessor = new CmmProcessor();
-            CancellationTokenSource tokenSource = new CancellationTokenSource();
 
-            GrpcService grpcService = new GrpcService(cmmProcessor, tokenSource);
+            GrpcService grpcService = new GrpcService(cmmProcessor);
 
             GrpcServer server = new GrpcServer(CMM_Parallel_Runner_Grpc_Service.BindService(grpcService), Helpers.DefaultHost, Helpers.DefaultPort);
             server.Start();
@@ -30,8 +29,6 @@ namespace CMM_Parallel_Runner.Server
             }
             finally
             {
-                tokenSource.Cancel();
-
                 server.Stop();
             }
         }

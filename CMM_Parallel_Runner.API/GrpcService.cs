@@ -11,46 +11,50 @@ namespace CMM_Parallel_Runner.API
     public class GrpcService : CMM_Parallel_Runner_Grpc_Service.CMM_Parallel_Runner_Grpc_ServiceBase
     {
         private readonly ICmmProcessor _cmmProcessor;
-        private readonly CancellationToken _cancellationToken;
 
         private readonly Dictionary<string, Session> _sessions;
 
-        public GrpcService(ICmmProcessor cmmProcessor, CancellationTokenSource cancellationTokenSource)
+        public GrpcService(ICmmProcessor cmmProcessor)
         {
             _cmmProcessor = cmmProcessor;
-
-            _cancellationToken = cancellationTokenSource.Token;
 
             _sessions = new Dictionary<string, Session>();
         }
 
-        public override async Task HandShaking(GrpcNone request, IServerStreamWriter<GrpcExportResult> responseStream, ServerCallContext context)
+        public override async Task GrpcHandShaking(GrpcHandShakingRequest request, IServerStreamWriter<GrpcExportResult> responseStream, ServerCallContext context)
         {
             Session session = null;
+            string sessionId = GetSessionId(context);
+
+            lock (_sessions)
+            {
+                if (_sessions.TryGetValue(sessionId, out session))
+                {
+                    throw new Exception($"The session Id {sessionId} already exists");
+                }
+
+                session = new Session(_cmmProcessor, responseStream, context);
+                _sessions.Add(sessionId, session);
+            }
 
             try
             {
+                await session.Process();
+            }
+            finally
+            {
+                session.Dispose();
+
                 lock (_sessions)
                 {
-                    string sessionId = GetSessionId(context);
-
-                    if(!_sessions.TryGetValue(sessionId, out session))
-                    {
-                        session = new Session(responseStream, _cmmProcessor);
-                        _sessions.Add(sessionId, session);
-                    }
+                    _sessions.Remove(sessionId);
                 }
+            }
 
-                await session.Process(_cancellationToken);
-            }
-            catch (Exception)
-            {
-                session?.Dispose();
-                throw;
-            }
+            return;
         }
 
-        public override Task<GrpcCmmExportResponse> DoCmmExport(GrpcCmmExportRequest request, ServerCallContext context)
+        public override Task<GrpcCmmResult> GrpcDoCmmExport(GrpcCmmExportRequest request, ServerCallContext context)
         {
             try
             {
@@ -65,16 +69,40 @@ namespace CMM_Parallel_Runner.API
                     }
                 }
 
-                GrpcCmmExportResponse response = session.AddCmmExportRequest(request);
+                GrpcCmmResult response = session.AddCmmExportRequest(request);
 
                 return Task.FromResult(response);
             }
             catch (Exception e)
             {
-                return Task.FromResult(new GrpcCmmExportResponse {Result = eGrpcExportResult.Fail, Message = e.ToString()});
+                return Task.FromResult(new GrpcCmmResult {Result = eGrpcExportResult.Fail, Message = e.ToString()});
             }
         }
 
-        private static string GetSessionId(ServerCallContext context) => context.Host;
+        public override Task<GrpcCmmResult> GRpcStop(GrpcNone request, ServerCallContext context)
+        {
+            try
+            {
+                string sessionId = GetSessionId(context);
+
+                lock (_sessions)
+                {
+                    if (!_sessions.TryGetValue(sessionId, out Session session))
+                    {
+                        throw new Exception($"The session Id {sessionId} was not found");
+                    }
+
+                    session.Stop();
+                }
+
+                return Task.FromResult(new GrpcCmmResult());
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult(new GrpcCmmResult {Result = eGrpcExportResult.Fail, Message = e.ToString()});
+            }
+        }
+
+        private static string GetSessionId(ServerCallContext context) => context.Peer;
     }
 }

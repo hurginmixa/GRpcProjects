@@ -12,29 +12,53 @@ namespace CMM_Parallel_Runner.API
     {
         private readonly IServerStreamWriter<GrpcExportResult> _responseStream;
         private readonly ICmmProcessor _cmmProcessor;
+        private readonly CancellationToken _serverCancellationToken;
+        private readonly CancellationToken _sessionCancellationToken;
+        private readonly CancellationTokenSource _sessionCancellationTokenSource;
 
         private readonly AsyncQueue<GrpcCmmExportRequest> _queue;
 
-        public Session(IServerStreamWriter<GrpcExportResult> responseStream, ICmmProcessor cmmProcessor)
+        public Session(ICmmProcessor cmmProcessor, IServerStreamWriter<GrpcExportResult> responseStream, ServerCallContext context)
         {
             _responseStream = responseStream;
             _cmmProcessor = cmmProcessor;
+            
+            _serverCancellationToken = context.CancellationToken;
+            _sessionCancellationTokenSource = new CancellationTokenSource();
+            _sessionCancellationToken = _sessionCancellationTokenSource.Token;
+
             _queue = new AsyncQueue<GrpcCmmExportRequest>();
         }
 
-        public async Task Process(CancellationToken cancellationToken)
+        public GrpcCmmResult AddCmmExportRequest(GrpcCmmExportRequest grpcRequest)
         {
+            _queue.Enqueue(grpcRequest);
+
+            return new GrpcCmmResult {Result = eGrpcExportResult.Ok, Message = "Ok", Index = grpcRequest.Index};
+        }
+
+        public async Task Process()
+        {
+            CancellationTokenSource linkedTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_serverCancellationToken, _sessionCancellationToken);
+
+            CancellationToken commonCancellationToken = linkedTokenSource.Token;
+
             while (true)
             {
-                GrpcCmmExportRequest grpcExportRequest = await _queue.DequeueAsync(cancellationToken);
-                if (cancellationToken.IsCancellationRequested)
+                GrpcCmmExportRequest grpcExportRequest;
+
+                try
+                {
+                    grpcExportRequest = await _queue.DequeueAsync(commonCancellationToken);
+                }
+                catch (OperationCanceledException)
                 {
                     break;
                 }
 
-                CmmExportRequest exportRequest = new CmmExportRequest(grpcExportRequest);
+                CmmExportRequest cmmExportRequest = new CmmExportRequest(grpcExportRequest);
 
-                CmmExportResult cmmExportResult = _cmmProcessor.DoCmmExport(exportRequest);
+                CmmExportResult cmmExportResult = _cmmProcessor.DoCmmExport(cmmExportRequest);
 
                 GrpcExportResult grpcExportResult = new GrpcExportResult
                 {
@@ -44,19 +68,24 @@ namespace CMM_Parallel_Runner.API
                 };
 
                 await _responseStream.WriteAsync(grpcExportResult);
+
+                if (commonCancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
             }
-        }
-
-        public GrpcCmmExportResponse AddCmmExportRequest(GrpcCmmExportRequest grpcRequest)
-        {
-            _queue.Enqueue(grpcRequest);
-
-            return new GrpcCmmExportResponse {Result = eGrpcExportResult.Ok, Message = "Ok", Index = grpcRequest.Index};
         }
 
         public void Dispose()
         {
+            Stop();
+
             _queue.Dispose();
+        }
+
+        public void Stop()
+        {
+            _sessionCancellationTokenSource.Cancel();
         }
     }
 }
