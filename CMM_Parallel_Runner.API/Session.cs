@@ -53,7 +53,7 @@ namespace CMM_Parallel_Runner.API
                 {
                     grpcExportRequest = await _queue.DequeueAsync(commonCancellationToken);
                 }
-                catch (OperationCanceledException)
+                catch (OperationCanceledException ex)
                 {
                     break;
                 }

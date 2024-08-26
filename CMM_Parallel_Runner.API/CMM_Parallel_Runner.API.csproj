@@ -73,9 +73,9 @@
     <Compile Include="Contracts\CreateFileInfo.cs" />
     <Compile Include="Contracts\ICmmProcessor.cs" />
     <Compile Include="GrpcServer.cs" />
+    <Compile Include="GrpcService.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="GrpcService.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="SessionDictionary.cs" />
   </ItemGroup>

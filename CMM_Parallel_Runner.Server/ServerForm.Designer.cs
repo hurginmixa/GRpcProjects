@@ -47,7 +47,7 @@
             this.lbCount.Name = "lbCount";
             this.lbCount.Size = new System.Drawing.Size(59, 25);
             this.lbCount.TabIndex = 1;
-            this.lbCount.Text = "Count";
+            this.lbCount.Text = "0";
             // 
             // ServerForm
             // 
@@ -56,6 +56,9 @@
             this.ClientSize = new System.Drawing.Size(362, 138);
             this.Controls.Add(this.lbCount);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "ServerForm";
             this.Text = "ServerForm";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);

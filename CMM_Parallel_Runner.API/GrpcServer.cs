@@ -5,11 +5,11 @@ namespace CMM_Parallel_Runner.API
 {
     public class GrpcServer
     {
-        private readonly Server _grpcServer;
+        private readonly Grpc.Core.Server _grpcServer;
 
         public GrpcServer(ServerServiceDefinition serviceDefinition, string serverHost, int serverPort)
         {
-            _grpcServer = new Server()
+            _grpcServer = new Grpc.Core.Server()
             {
                 Services = {serviceDefinition},
                 Ports = {new ServerPort(serverHost, serverPort, ServerCredentials.Insecure)}

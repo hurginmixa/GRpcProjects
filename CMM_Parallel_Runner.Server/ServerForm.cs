@@ -19,6 +19,7 @@ namespace CMM_Parallel_Runner.Server
         public ServerForm(GrpcService grpcService)
         {
             _grpcService = grpcService;
+            _count = 0;
             
             InitializeComponent();
         }
@@ -27,7 +28,7 @@ namespace CMM_Parallel_Runner.Server
         {
             _grpcService.Sessions.OnAddingNewSession += OnAddingNewSession;
             _grpcService.Sessions.OnRemovingSession += OnRemovingSession;
-            _count = 0;
+            lbCount.Text = _count.ToString();
         }
 
         private void OnRemovingSession(string id, Session session)
