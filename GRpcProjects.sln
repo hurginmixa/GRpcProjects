@@ -25,6 +25,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMM_Parallel_Runner.Server", "CMM_Parallel_Runner.Server\CMM_Parallel_Runner.Server.csproj", "{DB81FB34-5567-499A-B632-16E7DE102C41}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMM_Parallel_Runner.Client", "CMM_Parallel_Runner.Client\CMM_Parallel_Runner.Client.csproj", "{120C039C-0D05-40B8-B986-6CDDD55DAD3F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DB81FB34-5567-499A-B632-16E7DE102C41} = {DB81FB34-5567-499A-B632-16E7DE102C41}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

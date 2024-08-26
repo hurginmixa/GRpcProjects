@@ -11,7 +11,7 @@ namespace CMM_Parallel_Runner.Client
     {
         private readonly CancellationTokenSource _cancellationTokenSource;
         private readonly CMM_Parallel_Runner_Grpc_Service.CMM_Parallel_Runner_Grpc_ServiceClient _client;
-        private readonly Task _task;
+        private readonly Task _readingStreamTask;
 
         public Client()
         {
@@ -20,15 +20,15 @@ namespace CMM_Parallel_Runner.Client
 
             _cancellationTokenSource = new CancellationTokenSource();
 
-            _task = Task.Run(ReadStreamTask);
-        }
-
-        private async Task ReadStreamTask()
-        {
             AsyncServerStreamingCall<GrpcExportResult> handShaking = _client.GrpcHandShaking(new GrpcHandShakingRequest() {RequestorName = "Mixa"});
 
             IAsyncStreamReader<GrpcExportResult> stream = handShaking.ResponseStream;
 
+            _readingStreamTask = Task.Run(() => ReadingStreamAsync(stream));
+        }
+
+        private async Task ReadingStreamAsync(IAsyncStreamReader<GrpcExportResult> stream)
+        {
             try
             {
                 while (await stream.MoveNext(_cancellationTokenSource.Token))
@@ -44,20 +44,20 @@ namespace CMM_Parallel_Runner.Client
                         break;
 
                     default:
-                        break;
+                        throw;
                 }
             }
         }
 
         public void Stop()
         {
-            if (_task.IsCompleted)
+            if (_readingStreamTask.IsCompleted)
             {
                 return;
             }
 
             _cancellationTokenSource.Cancel();
-            _task.Wait();
+            _readingStreamTask.Wait();
         }
 
         public void SendRequest(int index)

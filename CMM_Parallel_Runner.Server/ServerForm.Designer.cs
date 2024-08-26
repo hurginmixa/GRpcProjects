@@ -30,6 +30,7 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.lbCount = new System.Windows.Forms.Label();
+            this.lboxSessionList = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // label1
@@ -49,18 +50,28 @@
             this.lbCount.TabIndex = 1;
             this.lbCount.Text = "0";
             // 
+            // lboxSessionList
+            // 
+            this.lboxSessionList.FormattingEnabled = true;
+            this.lboxSessionList.ItemHeight = 16;
+            this.lboxSessionList.Location = new System.Drawing.Point(22, 63);
+            this.lboxSessionList.Name = "lboxSessionList";
+            this.lboxSessionList.Size = new System.Drawing.Size(243, 244);
+            this.lboxSessionList.TabIndex = 2;
+            // 
             // ServerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(362, 138);
+            this.ClientSize = new System.Drawing.Size(362, 343);
+            this.Controls.Add(this.lboxSessionList);
             this.Controls.Add(this.lbCount);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ServerForm";
-            this.Text = "ServerForm";
+            this.Text = "Server Form";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
@@ -72,6 +83,7 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lbCount;
+        private System.Windows.Forms.ListBox lboxSessionList;
     }
 }
 

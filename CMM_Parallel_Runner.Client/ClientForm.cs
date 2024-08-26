@@ -4,13 +4,13 @@ using System.Windows.Forms;
 
 namespace CMM_Parallel_Runner.Client
 {
-    public partial class Form1 : Form
+    public partial class ClientForm : Form
     {
         private int _num;
         
         private Client _client;
 
-        public Form1()
+        public ClientForm()
         {
             InitializeComponent();
         }

@@ -10,16 +10,22 @@ namespace CMM_Parallel_Runner.API
 {
     public class Session : IDisposable
     {
+        private readonly string _sessionId;
         private readonly IServerStreamWriter<GrpcExportResult> _responseStream;
         private readonly ICmmProcessor _cmmProcessor;
         private readonly CancellationToken _serverCancellationToken;
         private readonly CancellationToken _sessionCancellationToken;
         private readonly CancellationTokenSource _sessionCancellationTokenSource;
 
+        public delegate void SessionDelegate(string sessionId, Session session);
+        public delegate void SessionAddDelegate(string sessionId, Session session, bool add);
+        public event SessionAddDelegate OnSessionChanged;
+
         private readonly AsyncQueue<GrpcCmmExportRequest> _queue;
 
-        public Session(ICmmProcessor cmmProcessor, IServerStreamWriter<GrpcExportResult> responseStream, ServerCallContext context)
+        public Session(string sessionId, ICmmProcessor cmmProcessor, IServerStreamWriter<GrpcExportResult> responseStream, ServerCallContext context)
         {
+            _sessionId = sessionId;
             _responseStream = responseStream;
             _cmmProcessor = cmmProcessor;
             
@@ -34,8 +40,12 @@ namespace CMM_Parallel_Runner.API
         {
             _queue.Enqueue(grpcRequest);
 
+            OnSessionChanged?.Invoke(_sessionId, this, true);
+
             return new GrpcCmmResult {Result = eGrpcExportResult.Ok, Message = "Ok", Index = grpcRequest.Index};
         }
+
+        public string SessionId => _sessionId;
 
         public int RequestCount => _queue.Count;
 
@@ -75,6 +85,8 @@ namespace CMM_Parallel_Runner.API
                 {
                     break;
                 }
+
+                OnSessionChanged?.Invoke(_sessionId, this, false);
             }
         }
 

@@ -10,9 +10,9 @@ namespace CMM_Parallel_Runner.API
     {
         private readonly Dictionary<string, Session> _sessions = new Dictionary<string, Session>();
 
-        public delegate void SessionDelegate(string sessionId, Session session);
-        public event SessionDelegate OnAddingNewSession;
-        public event SessionDelegate OnRemovingSession;
+        public event Session.SessionDelegate OnAddingNewSession;
+        public event Session.SessionDelegate OnRemovingSession;
+        public event Session.SessionAddDelegate OnChangingSession;
 
         public Session AddNewSession(string sessionId, ICmmProcessor cmmProcessor, IServerStreamWriter<GrpcExportResult> responseStream, ServerCallContext context)
         {
@@ -23,13 +23,20 @@ namespace CMM_Parallel_Runner.API
                     throw new Exception($"The session Id {sessionId} already exists");
                 }
 
-                session = new Session(cmmProcessor, responseStream, context);
+                session = new Session(sessionId, cmmProcessor, responseStream, context);
+                session.OnSessionChanged += OnSessionOnOnSessionChanged;
+
                 _sessions.Add(sessionId, session);
 
                 OnAddingNewSession?.Invoke(sessionId, session);
 
                 return session;
             }
+        }
+
+        private void OnSessionOnOnSessionChanged(string id, Session session1, bool add)
+        {
+            OnChangingSession?.Invoke(id, session1, add);
         }
 
         public Session GetSession(string sessionId)
@@ -49,7 +56,8 @@ namespace CMM_Parallel_Runner.API
         {
             lock (_sessions)
             {
-                var session = GetSession(sessionId);
+                Session session = GetSession(sessionId);
+                session.OnSessionChanged -= OnSessionOnOnSessionChanged;
 
                 OnRemovingSession?.Invoke(sessionId, session);
 
