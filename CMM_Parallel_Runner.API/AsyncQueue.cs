@@ -30,6 +30,17 @@ namespace CMM_Parallel_Runner.API
             }
         }
 
+        public int Count
+        {
+            get
+            {
+                lock (_queue)
+                {
+                    return _queue.Count;
+                }
+            }
+        }
+
         public void Dispose()
         {
             _semaphore?.Dispose();

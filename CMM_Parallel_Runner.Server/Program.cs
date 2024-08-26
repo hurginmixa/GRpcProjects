@@ -25,19 +25,12 @@ namespace CMM_Parallel_Runner.Server
             {
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new Form1());
+                Application.Run(new ServerForm(grpcService));
             }
             finally
             {
                 server.Stop();
             }
         }
-    }
-
-    internal static class Helpers
-    {
-        public const string DefaultHost = "localhost";
-
-        public const int DefaultPort = 50051;
     }
 }

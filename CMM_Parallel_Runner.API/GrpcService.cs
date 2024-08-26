@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Runtime.Remoting.Contexts;
 using System.Threading;
 using System.Threading.Tasks;
 using CMM_Parallel_Runner.API.Contracts;
@@ -11,31 +11,22 @@ namespace CMM_Parallel_Runner.API
     public class GrpcService : CMM_Parallel_Runner_Grpc_Service.CMM_Parallel_Runner_Grpc_ServiceBase
     {
         private readonly ICmmProcessor _cmmProcessor;
-
-        private readonly Dictionary<string, Session> _sessions;
+        private readonly SessionDictionary _sessions;
 
         public GrpcService(ICmmProcessor cmmProcessor)
         {
             _cmmProcessor = cmmProcessor;
 
-            _sessions = new Dictionary<string, Session>();
+            _sessions = new SessionDictionary();
         }
+
+        public SessionDictionary Sessions => _sessions;
 
         public override async Task GrpcHandShaking(GrpcHandShakingRequest request, IServerStreamWriter<GrpcExportResult> responseStream, ServerCallContext context)
         {
-            Session session = null;
             string sessionId = GetSessionId(context);
 
-            lock (_sessions)
-            {
-                if (_sessions.TryGetValue(sessionId, out session))
-                {
-                    throw new Exception($"The session Id {sessionId} already exists");
-                }
-
-                session = new Session(_cmmProcessor, responseStream, context);
-                _sessions.Add(sessionId, session);
-            }
+            Session session = _sessions.AddNewSession(sessionId, _cmmProcessor, responseStream, context);
 
             try
             {
@@ -43,31 +34,17 @@ namespace CMM_Parallel_Runner.API
             }
             finally
             {
-                session.Dispose();
-
-                lock (_sessions)
-                {
-                    _sessions.Remove(sessionId);
-                }
+                _sessions.Remove(sessionId);
             }
-
-            return;
         }
 
         public override Task<GrpcCmmResult> GrpcDoCmmExport(GrpcCmmExportRequest request, ServerCallContext context)
         {
             try
             {
-                Session session;
                 string sessionId = GetSessionId(context);
 
-                lock (_sessions)
-                {
-                    if (!_sessions.TryGetValue(sessionId, out session))
-                    {
-                        throw new Exception($"The session Id {sessionId} was not found");
-                    }
-                }
+                Session session = _sessions.GetSession(sessionId);
 
                 GrpcCmmResult response = session.AddCmmExportRequest(request);
 
@@ -85,17 +62,11 @@ namespace CMM_Parallel_Runner.API
             {
                 string sessionId = GetSessionId(context);
 
-                lock (_sessions)
-                {
-                    if (!_sessions.TryGetValue(sessionId, out Session session))
-                    {
-                        throw new Exception($"The session Id {sessionId} was not found");
-                    }
+                Session session = _sessions.GetSession(sessionId);
 
-                    session.Stop();
-                }
+                session.Stop();
 
-                return Task.FromResult(new GrpcCmmResult());
+                return Task.FromResult(new GrpcCmmResult {Result = eGrpcExportResult.Ok});
             }
             catch (Exception e)
             {

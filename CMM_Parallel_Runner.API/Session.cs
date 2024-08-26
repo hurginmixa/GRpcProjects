@@ -8,7 +8,7 @@ using Grpc.Core;
 
 namespace CMM_Parallel_Runner.API
 {
-    internal class Session : IDisposable
+    public class Session : IDisposable
     {
         private readonly IServerStreamWriter<GrpcExportResult> _responseStream;
         private readonly ICmmProcessor _cmmProcessor;
@@ -36,6 +36,8 @@ namespace CMM_Parallel_Runner.API
 
             return new GrpcCmmResult {Result = eGrpcExportResult.Ok, Message = "Ok", Index = grpcRequest.Index};
         }
+
+        public int RequestCount => _queue.Count;
 
         public async Task Process()
         {
